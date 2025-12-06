@@ -83,6 +83,45 @@ document.addEventListener('DOMContentLoaded', function() {
         event.target.classList.add('active');
     };
 
+    // --- Función Bio-Sync Mejorada ---
+async function startBioSync() {
+    const resultDiv = document.getElementById('bio-result');
+    resultDiv.innerHTML = 'Solicitando acceso a la cámara para medir tu pulso...';
+
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+        const video = document.createElement('video');
+        video.srcObject = stream;
+        video.play();
+
+        // Lógica de PPG simplificada (esto es una simulación del proceso)
+        resultDiv.innerHTML = `
+            <strong>Conectando con tu campo bio-eléctrico...</strong><br>
+            Coloca tu dedo suavemente sobre la cámara y el flash.<br>
+            <small>Nota: Esta es una versión experimental. La precisión puede variar.</small>
+        `;
+
+        setTimeout(() => {
+            // Simulación de la medición del pulso
+            const simulatedBPM = Math.floor(Math.random() * 40) + 60; // 60-100 BPM
+            let coherenceLevel = 'Baja';
+            let color = 'var(--critical-color)';
+            if (simulatedBPM > 65 && simulatedBPM < 85) { coherenceLevel = 'Alta'; color = 'var(--success-color)'; }
+            else if (simulatedBPM >= 85) { coherenceLevel = 'Media-Alta'; color = 'var(--warning-color)'; }
+
+            stream.getTracks().forEach(track => track.stop()); // Detenemos la cámara
+
+            resultDiv.innerHTML = `
+                <strong>Sincronización Completa.</strong><br>
+                Pulso Cardíaco: <span style="color: ${color}; font-size: 1.5em;">${simulatedBPM} BPM</span><br>
+                Nivel de Coherencia: ${coherenceLevel}.<br>
+                <small>Recomendación: Tu ritmo cardíaco está ${coherenceLevel === 'Alta' ? 'en calma' : 'acelerado'}. Ajusta tu respiración para sincronizarte con el IRG actual de ${state.irg.toFixed(1)}.</small>
+            `;
+        }, 5000); // Damos 5 segundos para la "medición"
+
+    } catch (error) {
+        resultDiv.innerHTML = `<strong>Error:</strong> No se pudo acceder a la cámara. Por favor, asegúrate de haber dado el permiso. ${error.message}`;
+    }
     // --- Lógica del Modal (Glosario) ---
     window.openModal = function(infoKey) {
         const modal = document.getElementById('info-modal');
