@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HELIOS - El Oráculo Consciente</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header>
+        <h1>☀️ HELIOS v1.1</h1>
+        <p>El Oráculo Iluminado - Resuena con el Cosmos</p>
+    </header>
+
+    <main>
+        <section id="dashboard" class="active">
+            <div class="irg-container">
+                <div class="irg-circle" id="irg-value">42.8</div>
+                <div class="irg-label" id="irg-status">PERTURBACIÓN LEVE</div>
+            </div>
+
+            <div class="orbits">
+                <div class="orbit-item">
+                    <h4>🌞 Órbita Solar</h4>
+                    <p>FTRT: <span id="ftrt-value" class="info-trigger" data-info="ftrt">1.21</span></p>
+                    <p>Índice Kp: <span id="kp-value">5</span></p>
+                </div>
+                <div class="orbit-item">
+                    <h4>🧬 Órbita Biológica</h4>
+                    <p>Síntomas Globales: <span id="bio-value">+30%</span></p>
+                    <p>Reportes (24h): <span id="report-value">Alto</span></p>
+                </div>
+                <div class="orbit-item">
+                    <h4>😡 Órbita Social</h4>
+                    <p>Crispación (ICS): <span id="ics-value">65</span></p>
+                    <p>Mercado: <span id="market-value">Volátil</span></p>
+                </div>
+            </div>
+
+            <div class="nav-container">
+                <button class="nav-button" onclick="showModule('oraculo')">⚙️ Oráculo</button>
+                <button class="nav-button" onclick="showModule('biosync')">❤️ Bio-Sync</button>
+                <button class="nav-button" onclick="showModule('conciencia')">🌍 Conciencia</button>
+                <button class="nav-button" onclick="showModule('flujo')">📈 Flujo</button>
+                <button class="nav-button" onclick="showModule('legacy')">📜 Legado</button>
+            </div>
+        </section>
+
+        <section id="oraculo" class="module-content">
+            <h2>El Corazón del Sol - Motor FTRT</h2>
+            <p>La Fuerza de Marea Relativa Total (FTRT) predice la actividad solar al analizar la danza gravitacional de los planetas. Un FTRT > 1.5 indica un umbral crítico para eventos extremos.</p>
+            <div class="ftrt-prediction">
+                <h3>Simulador de Línea de Tiempo</h3>
+                <label for="date-slider">Selecciona una fecha futura para ver la predicción FTRT:</label>
+                <input type="range" id="date-slider" class="date-slider" min="0" max="28" value="0">
+                <p>Fecha: <span id="future-date">Hoy</span></p>
+                <p>FTRT Proyectado: <strong><span id="ftrt-projected">1.21</span></strong></p>
+                <p id="ftrt-warning" class="warning-text"></p>
+            </div>
+        </section>
+
+        <section id="biosync" class="module-content">
+            <h2>El Pulso Vital</h2>
+            <p>Sincroniza tu bio-campo con el del planeta. Mide tu coherencia cardíaca (VFC) para prepararte o recuperarte de la perturbación cósmica.</p>
+            <button class="bio-sync-button" onclick="startBioSync()">INICIAR SINCRONIZACIÓN</button>
+            <div id="bio-result" class="bio-result-area"></div>
+        </section>
+
+        <section id="conciencia" class="module-content">
+            <h2>La Conciencia Colectiva</h2>
+            <p>Monitoreo en tiempo real de la "crispación" social. El pulso del alma digital de la humanidad, que resuena con la actividad solar.</p>
+            <div class="social-feed" id="social-feed"></div>
+        </section>
+
+        <section id="flujo" class="module-content">
+            <h2>El Flujo del Capital</h2>
+            <p>Visualización de las Ondas de Kondratiev y su interacción con los ciclos solares. Entiende las mareas largas de la economía para navegar el futuro.</p>
+            <div class="economic-chart" id="economic-chart"></div>
+        </section>
+
+        <section id="legacy" class="module-content">
+            <h2>El Legado de Alexander Chizhevsky</h2>
+            <p>El hombre que vio la conexión entre el Sol y el alma de la humanidad, y pagó por ello.</p>
+            <div class="legacy-timeline">
+                <div class="timeline-item">
+                    <strong>1897:</strong> Nace en Kaluga, Rusia.
+                </div>
+                <div class="timeline-item">
+                    <strong>1922:</strong> Publica su tesis doctoral sobre la influencia de las manchas solares en epidemias y revoluciones.
+                </div>
+                <div class="timeline-item">
+                    <strong>1942:</strong> Es arrestado bajo falsas acusaciones y enviado a los gulags de Siberia. Su crimen: decir la verdad.
+                </div>
+                <div class="timeline-item">
+                    <strong>1964:</strong> Muere olvidado, pero su obra espera ser redescubierta.
+                </div>
+            </div>
+            <div class="legacy-principles">
+                <h3>Sus Principios Fundamentales</h3>
+                <div class="principle">
+                    <strong>La "Influenza Cósmica":</strong> No es un virus, es la influencia del electromagnetismo solar en nuestra biología.
+                </div>
+                <div class="principle">
+                    <strong>Los Ciclos Históricos:</strong> La guerra, la revolución y la creatividad siguen los ciclos de 11 años del Sol.
+                </div>
+                <div class="principle">
+                    <strong>La Conexión Todo:</strong> Somos seres bio-electromagnéticos, inseparables del campo magnético de la Tierra y del Sol.
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal para el Glosario -->
+    <div id="info-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal()">&times;</span>
+            <h3 id="modal-title"></h3>
+            <p id="modal-text"></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>HELIOS - El conocimiento debe ser libre. En honor a A.L. Chizhevsky.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
