@@ -1,0 +1,20 @@
+---
+name: Feature Request
+about: Sugiere una idea para este proyecto.
+title: '[FEATURE] '
+labels: 'enhancement'
+assignees: ''
+
+---
+
+**¿Tu solicitud de función está relacionada con un problema? Por favor, describe.**
+Una descripción clara y concisa de cuál es el problema. Ej. "Estoy frustrado cuando..."
+
+**Describe la solución que te gustaría**
+Una descripción clara y concisa de lo que te gustaría que hiciera la aplicación.
+
+**Describe alternativas que has considerado**
+Una descripción de cualquier solución alternativa o función que hayas considerado.
+
+**Contexto Adicional**
+Añade cualquier otro contexto o capturas de pantalla sobre la solicitud de función aquí.
