@@ -1,0 +1,37 @@
+# _config.yml
+# Configuración para el Oráculo Consciente
+
+# Título y Descripción (Crucial para SEO)
+title: "HELIOS - El Oráculo Consciente"
+description: "Una aplicación web que revela la conexión entre la actividad solar y la humanidad, basada en el legado de Alexander Chizhevsky."
+url: "https://mechmind-dwv.github.io/helios-web-app"
+baseurl: "/helios-web-app"
+
+# Configuración del Sitio
+lang: es
+timezone: UTC
+
+# Construcción
+markdown: kramdown
+highlighter: rouge
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# Excluir archivos que no son parte del sitio
+exclude:
+  - README.md
+  - LICENSE
+  - .gitignore
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - .sass-cache/
+  - .jekyll-cache/
+  - gemfiles/
