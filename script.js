@@ -97,13 +97,13 @@ function updateIrgStyle() {
 // --- LÓGICA DE MÓDULOS Y NAVEGACIÓN ---
 
 // Muestra un módulo específico y oculta los demás
-window.showModule = function(moduleId) {
+window.showModule = function(moduleId, buttonElement) {
     document.querySelectorAll('main section').forEach(sec => sec.classList.remove('active'));
     document.getElementById(moduleId).classList.add('active');
     document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
     // Aseguramos de que el botón que se clickeo se active
-    if (event && event.target) {
-        event.target.classList.add('active');
+    if (buttonElement) {
+        buttonElement.classList.add('active');
     }
 };
 
@@ -243,52 +243,4 @@ document.addEventListener('DOMContentLoaded', function() {
             closeModal(); 
         } 
     };
-});            let coherenceLevel = 'Baja';
-            let color = 'var(--critical-color)';
-            if (simulatedBPM > 65 && simulatedBPM < 85) { coherenceLevel = 'Alta'; color = 'var(--success-color)'; }
-            else if (simulatedBPM >= 85) { coherenceLevel = 'Media-Alta'; color = 'var(--warning-color)'; }
-
-            stream.getTracks().forEach(track => track.stop()); // Detenemos la cámara
-
-            resultDiv.innerHTML = `
-                <strong>Sincronización Completa.</strong><br>
-                Pulso Cardíaco: <span style="color: ${color}; font-size: 1.5em;">${simulatedBPM} BPM</span><br>
-                Nivel de Coherencia: ${coherenceLevel}.<br>
-                <small>Recomendación: Tu ritmo cardíaco está ${coherenceLevel === 'Alta' ? 'en calma' : 'acelerado'}. Ajusta tu respiración para sincronizarte con el IRG actual de ${state.irg.toFixed(1)}.</small>
-            `;
-        }, 5000); // Damos 5 segundos para la "medición"
-
-    } catch (error) {
-        resultDiv.innerHTML = `<strong>Error:</strong> No se pudo acceder a la cámara. Por favor, asegúrate de haber dado el permiso. ${error.message}`;
-    }
-    // --- Lógica del Modal (Glosario) ---
-    window.openModal = function(infoKey) {
-        const modal = document.getElementById('info-modal');
-        const info = glossary[infoKey];
-        if (info) {
-            document.getElementById('modal-title').innerText = info.title;
-            document.getElementById('modal-text').innerText = info.text;
-            modal.style.display = 'block';
-        }
-    };
-    window.closeModal = function() { document.getElementById('info-modal').style.display = 'none'; };
-    
-    // Asignar listeners a los elementos con info-trigger
-    document.querySelectorAll('.info-trigger').forEach(el => {
-        el.addEventListener('click', () => openModal(el.dataset.info));
-    });
-    window.onclick = function(event) { if (event.target == document.getElementById('info-modal')) { closeModal(); } };
-
-    // --- Simulaciones y Lógica de otros módulos ---
-    // (Copiar y adaptar la lógica de la versión HTML anterior para los demás módulos)
-    function simulateDataChange() { /* ... */ }
-    function startBioSync() { /* ... */ }
-    function updateSocialFeed() { /* ... */ }
-    function generateKondratievChart() { /* ... */ }
-
-    // --- Inicialización ---
-    updateDashboard();
-    setInterval(simulateDataChange, 4000);
-    setInterval(updateSocialFeed, 7000);
-    generateKondratievChart();
-});
+});});
