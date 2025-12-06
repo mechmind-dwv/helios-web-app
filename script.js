@@ -1,3 +1,47 @@
+// Añade esto al principio de tu script.js
+const SOLAR_API_BASE = 'https://api.nasa.gov/DONKI/';
+const NASA_API_KEY = 'DEMO_KEY'; // Puedes usar 'DEMO_KEY' para empezar. Para uso intensivo, solicita una gratis en https://api.nasa.gov/
+
+// --- Nueva función para obtener datos reales ---
+async function fetchSolarData() {
+    try {
+        // Obtenemos las CMEs (Eyecciones de Masa Coronal) de los últimos 30 días
+        const response = await fetch(`${SOLAR_API_BASE}CMEAnalysis?startDate=2024-01-01&endDate=2024-12-31&api_key=${NASA_API_KEY}`);
+        const cmeData = await response.json();
+
+        // Obtenemos las tormentas geomagnéticas
+        const gstResponse = await fetch(`${SOLAR_API_BASE}GST?startDate=2024-01-01&endDate=2024-12-31&api_key=${NASA_API_KEY}`);
+        const gstData = await gstResponse.json();
+
+        console.log('Datos Solares Recibidos:', { cmeData, gstData });
+
+        // --- Ahora, actualiza el estado con datos reales ---
+        // Lógica simple: si hay una CME de alta velocidad o una tormenta geomagnética (G), aumentamos el FTRT.
+        let newFtrt = 1.0; // Base
+        if (cmeData.length > 0) {
+            newFtrt += cmeData.length * 0.1;
+        }
+        if (gstData.some(gst => gst.kpIndex > 5)) {
+            newFtrt += 0.5;
+        }
+
+        state.ftrt = newFtrt;
+        state.kp = gstData.length > 0 ? gstData[gstData.length - 1].kpIndex || 5 : 5;
+        
+        updateDashboard(); // Llama a tu función existente para actualizar la UI
+
+    } catch (error) {
+        console.error("Error al obtener datos solares:", error);
+        // Si falla la API, mantenemos la simulación
+    }
+}
+
+// --- Llama a esta función al cargar la página y luego cada 5 minutos ---
+document.addEventListener('DOMContentLoaded', function() {
+    // ... tu código existente ...
+    fetchSolarData(); // Llamada inicial
+    setInterval(fetchSolarData, 300000); // Llama cada 5 minutos (300,000 ms)
+});
 document.addEventListener('DOMContentLoaded', function() {
     // Estado global
     const state = { irg: 42.8, ftrt: 1.21, kp: 5, bioSymptoms: 30, ics: 65 };
