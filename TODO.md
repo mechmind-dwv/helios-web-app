@@ -24,19 +24,62 @@ objetivo para que HELIOS pase de demo estática a plataforma sostenible.
 
 ## 1. Auditoría de código (bloqueante antes de crecer)
 
-- [ ] Revisar `script.js`: identificar si hay datos "hardcodeados"
-      (sunspot numbers, Kp, FTRT de ejemplo) igual que se corrigió en
-      HelioBio-API. Sustituir cualquier valor fijo por llamada real a
-      NOAA/NASA DONKI.
-- [ ] Verificar manejo de errores de fetch (¿qué pasa si NOAA/NASA
-      no responde? ¿hay fallback o la UI se rompe?).
-- [ ] Revisar `index.html` por JS inline / manejadores `onclick=""`
-      residuales — el commit "Fix: botones del dashboard que no se
-      abren" sugiere acoplamiento frágil entre HTML y JS.
-- [ ] Documentar en el propio `script.js` la fórmula FTRT usada aquí
-      y confirmar que coincide con la normalización corregida
-      (M·R☉/d³ vs Jupiter) — evitar el desfase que ya detectamos en
-      FTRT-Scientific-Validation.
+Hallazgos confirmados tras revisar `script.js` completo (no son
+hipótesis, son bugs reales presentes hoy en `main`):
+
+- [ ] **CRÍTICO — `state` fuera de scope.** Hay dos bloques
+      `DOMContentLoaded` separados. El primero (arriba del todo)
+      contiene `fetchSolarData()` y escribe en `state.ftrt` /
+      `state.kp`, pero `state` está declarado como `const` dentro del
+      *segundo* `DOMContentLoaded`. Cuando `fetchSolarData` se ejecuta,
+      lanza `ReferenceError: state is not defined`. Unificar en un
+      solo listener con un único `state` accesible a ambas funciones.
+- [ ] **CRÍTICO — bloque de inicialización anidado dentro de
+      `startBioSync`.** `openModal`, `closeModal`, los listeners de
+      `.info-trigger`, `window.onclick` del modal, y las funciones
+      `simulateDataChange` / `updateSocialFeed` / `generateKondratievChart`
+      están definidos *dentro del cuerpo de la función* `startBioSync`,
+      después del `catch`. Esto significa que el modal y esos módulos
+      solo se registran si `startBioSync()` se llega a ejecutar, no al
+      cargar la página. Sacar todo ese bloque fuera de `startBioSync`,
+      al nivel del `DOMContentLoaded`.
+- [ ] **Bio-Sync no mide nada real.** El BPM se genera con
+      `Math.floor(Math.random() * 40) + 60`. Se pide permiso de cámara
+      y se enciende el stream, pero nunca se leen píxeles ni se hace
+      PPG real — el stream solo se apaga al final. La UI muestra
+      "Sincronización Completa" y "Nivel de Coherencia" como si fuera
+      una medición. Decidir: (a) implementar PPG real desde
+      `canvas.getImageData()` sobre el frame de video, o (b) si se deja
+      como demo, marcarlo explícitamente en la UI como simulación —
+      no presentar un número aleatorio con la misma autoridad visual
+      que el IRG o el FTRT.
+- [ ] **Rango de fechas hardcodeado y desactualizado.** `fetchSolarData`
+      pide a NASA DONKI el rango `2024-01-01` a `2024-12-31` pese a que
+      el comentario dice "últimos 30 días". Cambiar a fechas dinámicas
+      (`new Date()` menos 30 días) o los datos mostrados quedan
+      congelados en 2024 sin importar cuándo se cargue la app.
+- [ ] **FTRT real de `fetchSolarData` no es la fórmula del proyecto.**
+      Aquí el valor sale de `1.0 + cmeData.length * 0.1 + (0.5 si algún
+      Kp > 5)` — un placeholder sin relación con
+      `Σ(M_planeta × R_☉)/d_planeta³` normalizado contra Júpiter.
+      Confirma el riesgo ya anotado: esta versión y la de
+      `FTRT-Scientific-Validation` van a divergir si no se unifican.
+      Sustituir por el motor validado, o renombrar esta métrica interna
+      (no reutilizar el nombre "FTRT" para algo que no es esa fórmula).
+- [ ] **`API_KEY = 'DEMO_KEY'` en el cliente.** Funciona pero con rate
+      limit muy bajo (30 req/hora, 50/día compartido). Si el tráfico
+      crece, moverlo a variable de entorno + proxy propio, o documentar
+      claramente el límite en README para quien clone el repo.
+- [ ] **`window.showModule` depende de `event` global implícito**
+      (`event.target.classList.add('active')` sin recibir `event` como
+      parámetro). Funciona por comportamiento heredado de navegadores
+      antiguos, pero es fragil — pasar el evento explícitamente:
+      `onclick="showModule('id', event)"`.
+- [ ] Verificar manejo de errores de fetch: hoy el `catch` de
+      `fetchSolarData` solo hace `console.error` y comenta "mantenemos
+      la simulación", pero no hay ninguna simulación de respaldo
+      definida en el código — si falla NASA, el dashboard simplemente
+      no actualiza `ftrt`/`kp` y no hay feedback visual al usuario.
 
 ## 2. Higiene de repositorio
 
