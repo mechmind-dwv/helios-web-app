@@ -194,10 +194,67 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     // --- Simulaciones y lógica de otros módulos ---
-    // (placeholders originales conservados; implementar según TODO.md)
-    function simulateDataChange() { /* ... */ }
-    function updateSocialFeed() { /* ... */ }
-    function generateKondratievChart() { /* ... */ }
+    // IMPORTANTE: no hay fuente de datos social ni económica real conectada
+    // todavía (ver TODO.md sección 4 — ICS e IRSE marcados ACTIVE_HYPOTHESIS).
+    // Estas tres funciones generan variación simulada para que el dashboard
+    // no se vea estático, pero cada salida deja explícito en la UI que es
+    // una simulación, no una medición. Sustituir por fuentes reales cuando
+    // existan (ver DATA_SOURCES.md pendiente).
+
+    function simulateDataChange() {
+        // Pequeña variación aleatoria acotada alrededor del valor actual,
+        // solo para que el dashboard principal no se vea congelado entre
+        // refrescos de fetchSolarData (cada 5 min). No sustituye datos reales.
+        state.irg = clamp(state.irg + (Math.random() - 0.5) * 2, 0, 100);
+        state.bioSymptoms = clamp(state.bioSymptoms + (Math.random() - 0.5) * 3, 0, 100);
+        state.ics = clamp(state.ics + (Math.random() - 0.5) * 4, 0, 100);
+        updateDashboard();
+    }
+
+    function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+    }
+
+    function updateSocialFeed() {
+        const feedEl = document.getElementById('social-feed');
+        if (!feedEl) return;
+
+        // ACTIVE_HYPOTHESIS: sin fuente social real conectada (ej. API de
+        // redes sociales agregada). Estos mensajes son ilustrativos del
+        // concepto de ICS, no datos observados.
+        const sampleSignals = [
+            'Aumento de menciones de fatiga e irritabilidad en foros públicos',
+            'Actividad en redes estable, sin picos de polarización detectados',
+            'Ligero incremento en discusiones sobre insomnio',
+            'Sin anomalías relevantes en el pulso social de las últimas horas',
+        ];
+        const pick = sampleSignals[Math.floor(Math.random() * sampleSignals.length)];
+
+        feedEl.innerHTML = `
+            <p class="ics-disclaimer">
+                <small>⚠️ ACTIVE HYPOTHESIS — simulación ilustrativa, sin fuente de datos social real conectada.</small>
+            </p>
+            <p>ICS actual (simulado): <strong>${state.ics.toFixed(0)}</strong></p>
+            <p>${pick}</p>
+        `;
+    }
+
+    function generateKondratievChart() {
+        const chartEl = document.getElementById('economic-chart');
+        if (!chartEl) return;
+
+        // ACTIVE_HYPOTHESIS: no hay fuente real de datos de mercado ni de
+        // Ondas de Kondratiev conectada (ver TODO.md, IRSE). Se muestra un
+        // marcador de posición honesto en vez de un gráfico con datos
+        // inventados presentados como si fueran reales.
+        chartEl.innerHTML = `
+            <p class="irse-disclaimer">
+                <small>⚠️ ACTIVE HYPOTHESIS — el Índice de Riesgo Solar-Económico (IRSE)
+                y las Ondas de Kondratiev aún no tienen una fuente de datos real
+                conectada en esta versión. Este panel es un marcador de posición.</small>
+            </p>
+        `;
+    }
 
     // --- Inicialización ---
     updateDashboard();
