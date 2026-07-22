@@ -1,7 +1,8 @@
 // ============================================================
 // HELIOS - script.js
 // Fix: state unificado, inicialización desanidada de startBioSync,
-// fechas dinámicas para NASA DONKI, Bio-Sync marcado como simulación.
+// fechas dinámicas para NASA DONKI, Bio-Sync marcado como simulación,
+// ids calzados con el index.html real (irg-status, irg-value=circulo).
 // ============================================================
 
 const SOLAR_API_BASE = 'https://api.nasa.gov/DONKI/';
@@ -26,13 +27,19 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateDashboard() {
         document.getElementById('irg-value').innerText = state.irg.toFixed(1);
         document.getElementById('ftrt-value').innerText = state.ftrt.toFixed(2);
-        // ... actualizar otros valores ...
+        const kpEl = document.getElementById('kp-value');
+        if (kpEl) kpEl.innerText = state.kp;
+        const bioEl = document.getElementById('bio-value');
+        if (bioEl) bioEl.innerText = `+${state.bioSymptoms}%`;
+        const icsEl = document.getElementById('ics-value');
+        if (icsEl) icsEl.innerText = state.ics;
         updateIrgStyle();
     }
 
     function updateIrgStyle() {
-        const irgCircle = document.getElementById('irg-circle');
-        const irgStatus = document.getElementById('irg-label');
+        // irg-value ES el círculo: en index.html es <div class="irg-circle" id="irg-value">
+        const irgCircle = document.getElementById('irg-value');
+        const irgStatus = document.getElementById('irg-status');
         let color, status;
         if (state.irg < 40) { color = 'var(--success-color)'; status = 'ARMONÍA PROFUNDA'; }
         else if (state.irg < 70) { color = 'var(--warning-color)'; status = 'PERTURBACIÓN LEVE'; }
@@ -95,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function setDataSourceStatus(mode) {
         const el = document.getElementById('data-source-status');
-        if (!el) return; // el elemento es opcional; añadir en index.html si se quiere mostrar
+        if (!el) return; // opcional; añadir <span id="data-source-status"> en index.html si se quiere ver
         if (mode === 'live') {
             el.innerText = 'Datos NASA DONKI en vivo';
             el.style.color = 'var(--success-color)';
@@ -106,12 +113,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // --- Lógica de Módulos ---
-    window.showModule = function (moduleId, evt) {
+    // index.html llama con onclick="showModule('oraculo', this)" — recibe
+    // el elemento botón directamente, no un evento.
+    window.showModule = function (moduleId, buttonEl) {
         document.querySelectorAll('main section').forEach(sec => sec.classList.remove('active'));
-        document.getElementById(moduleId).classList.add('active');
-        document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
-        const target = (evt && evt.target) || window.event?.target;
+        const target = document.getElementById(moduleId);
         if (target) target.classList.add('active');
+        document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
+        if (buttonEl) buttonEl.classList.add('active');
     };
 
     // --- Bio-Sync: SIMULACIÓN EXPLÍCITA, no mide PPG real todavía ---
