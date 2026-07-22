@@ -34,8 +34,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const icsEl = document.getElementById('ics-value');
         if (icsEl) icsEl.innerText = state.ics;
         const irgNoteEl = document.getElementById('irg-evidence-note');
-        if (irgNoteEl && state.irgNote) irgNoteEl.innerText = `(${state.irgEvidenceLevel}) ${state.irgNote}`;
+        if (irgNoteEl && state.irgNote) {
+            const badgeClass = evidenceBadgeClass(state.irgEvidenceLevel);
+            irgNoteEl.innerHTML = `<span class="evidence-badge ${badgeClass}">${state.irgEvidenceLevel}</span> ${state.irgNote}`;
+        }
         updateIrgStyle();
+    }
+
+    function evidenceBadgeClass(level) {
+        if (level === 'ESTABLISHED') return 'established';
+        if (level === 'PARTIAL') return 'partial';
+        return 'hypothesis'; // ACTIVE_HYPOTHESIS u otro
     }
 
     function updateIrgStyle() {
