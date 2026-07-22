@@ -73,3 +73,63 @@ main {
 .modal-content { background-color: var(--panel-bg); margin: 15% auto; padding: 20px; border: 1px solid var(--primary-color); width: 80%; max-width: 500px; border-radius: 10px; }
 .close-button { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
 .close-button:hover { color: var(--text-color); }
+
+/* --- Sistema de nivel de evidencia (ESTABLISHED / PARTIAL / ACTIVE HYPOTHESIS) --- */
+/* El irg-container necesita más alto porque irg-label es absolute y ahora
+   hay una nota debajo de él; sin esto la nota queda pegada o cortada. */
+.irg-container { min-height: 240px; }
+
+.evidence-note {
+    position: absolute;
+    bottom: -58px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.75em;
+    color: var(--warning-color);
+    opacity: 0.85;
+    line-height: 1.3;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.evidence-badge {
+    display: inline-block;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.65em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+    text-transform: uppercase;
+}
+.evidence-badge.established { background: rgba(0, 255, 136, 0.15); color: var(--success-color); border: 1px solid var(--success-color); }
+.evidence-badge.partial      { background: rgba(255, 136, 0, 0.15); color: var(--warning-color); border: 1px solid var(--warning-color); }
+.evidence-badge.hypothesis   { background: rgba(255, 0, 68, 0.12); color: var(--critical-color); border: 1px solid var(--critical-color); }
+
+/* Avisos de simulación / hipótesis activa dentro de los paneles de módulo.
+   Mismo lenguaje visual que .warning-text pero como bloque, no solo texto. */
+.ics-disclaimer, .irse-disclaimer {
+    background: rgba(255, 0, 68, 0.08);
+    border: 1px dashed var(--critical-color);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+}
+.ics-disclaimer small, .irse-disclaimer small {
+    color: var(--critical-color);
+    line-height: 1.4;
+}
+
+/* Indicador de fuente de datos (live / offline) — usado por
+   setDataSourceStatus() en script.js. Opcional: añadir el elemento
+   #data-source-status en index.html si se quiere mostrar. */
+#data-source-status {
+    display: block;
+    text-align: center;
+    font-size: 0.8em;
+    margin-top: 10px;
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 0.5px;
+}
