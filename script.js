@@ -1,8 +1,8 @@
 // ============================================================
 // HELIOS - script.js
 // Fix: state unificado, inicialización desanidada de startBioSync,
-// fechas dinámicas para NASA DONKI, Bio-Sync marcado como simulación,
-// ids calzados con el index.html real (irg-status, irg-value=circulo).
+// fechas dinámicas para NASA DONKI, Bio-Sync marcado como simulación.
+// IRG ahora se calcula desde datos reales (Kp + CMEs), no fijo.
 // ============================================================
 
 const SOLAR_API_BASE = 'https://api.nasa.gov/DONKI/';
@@ -33,6 +33,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (bioEl) bioEl.innerText = `+${state.bioSymptoms}%`;
         const icsEl = document.getElementById('ics-value');
         if (icsEl) icsEl.innerText = state.ics;
+        const irgNoteEl = document.getElementById('irg-evidence-note');
+        if (irgNoteEl && state.irgNote) irgNoteEl.innerText = `(${state.irgEvidenceLevel}) ${state.irgNote}`;
         updateIrgStyle();
     }
 
@@ -46,6 +48,31 @@ document.addEventListener('DOMContentLoaded', function () {
         else { color = 'var(--critical-color)'; status = 'TORMENTA CÓSMICA'; }
         irgCircle.style.borderColor = color; irgCircle.style.boxShadow = `0 0 20px ${color}40`;
         irgStatus.innerText = status; irgStatus.style.color = color;
+    }
+
+    // --- Métricas derivadas de datos reales ---
+    function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+    }
+
+    // Función pura: mismos inputs → mismo output. Fácil de testear y de
+    // auditar. Ver ARCHITECTURE.md sección 3 (capa de métricas).
+    function calculateIRG(kp, cmeCount) {
+        const kpNormalizado = clamp((kp / 9) * 100, 0, 100);
+        const actividadCme = clamp(cmeCount * 8, 0, 100);
+        const componenteSolar = clamp((kpNormalizado * 0.6) + (actividadCme * 0.4), 0, 100);
+
+        return {
+            value: componenteSolar,
+            evidenceLevel: 'PARTIAL',
+            // El IRG completo (README) suma salud global + estabilidad
+            // social. Hoy solo tenemos el componente solar real: los otros
+            // dos no tienen fuente conectada, así que este valor es una
+            // aproximación parcial, no el IRG "completo" que describe el
+            // README. Se deja documentado aquí en vez de fingir que ya
+            // integra todo.
+            note: 'Derivado solo del componente solar (Kp + CMEs). Componentes de salud global y estabilidad social pendientes de fuente real.',
+        };
     }
 
     // --- Datos solares reales (NASA DONKI) ---
@@ -88,6 +115,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 ? (gstData[gstData.length - 1].kpIndex || 5)
                 : 5;
 
+            const cmeCount = Array.isArray(cmeData) ? cmeData.length : 0;
+            const irgResult = calculateIRG(state.kp, cmeCount);
+            state.irg = irgResult.value;
+            state.irgNote = irgResult.note;
+            state.irgEvidenceLevel = irgResult.evidenceLevel;
+
             setDataSourceStatus('live');
             updateDashboard();
 
@@ -102,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function setDataSourceStatus(mode) {
         const el = document.getElementById('data-source-status');
-        if (!el) return; // opcional; añadir <span id="data-source-status"> en index.html si se quiere ver
+        if (!el) return; // el elemento es opcional; añadir en index.html si se quiere mostrar
         if (mode === 'live') {
             el.innerText = 'Datos NASA DONKI en vivo';
             el.style.color = 'var(--success-color)';
@@ -202,17 +235,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // existan (ver DATA_SOURCES.md pendiente).
 
     function simulateDataChange() {
-        // Pequeña variación aleatoria acotada alrededor del valor actual,
-        // solo para que el dashboard principal no se vea congelado entre
-        // refrescos de fetchSolarData (cada 5 min). No sustituye datos reales.
-        state.irg = clamp(state.irg + (Math.random() - 0.5) * 2, 0, 100);
+        // IRG ya no se toca aquí: viene de calculateIRG() con datos reales
+        // de NASA DONKI (ver fetchSolarData). Solo bioSymptoms e ics siguen
+        // sin fuente real y se marcan explícitamente como simulación en la UI.
         state.bioSymptoms = clamp(state.bioSymptoms + (Math.random() - 0.5) * 3, 0, 100);
         state.ics = clamp(state.ics + (Math.random() - 0.5) * 4, 0, 100);
         updateDashboard();
-    }
-
-    function clamp(value, min, max) {
-        return Math.min(max, Math.max(min, value));
     }
 
     function updateSocialFeed() {
