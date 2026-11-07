@@ -133,3 +133,23 @@ main {
     font-family: 'Orbitron', sans-serif;
     letter-spacing: 0.5px;
 }
+
+/* --- Módulo Journal Personal --- */
+.privacy-note { background: rgba(0, 170, 255, 0.08); border: 1px solid var(--primary-color); border-radius: 6px; padding: 8px 12px; font-size: 0.85em; margin-bottom: 20px; }
+.journal-form { background: var(--panel-bg); border: 1px solid #444; border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+.journal-form label { font-size: 0.9em; color: var(--primary-color); margin-top: 10px; }
+.journal-form input[type="range"] { width: 100%; accent-color: var(--primary-color); }
+.journal-form input[type="text"] { background: var(--bg-color); border: 1px solid #444; color: var(--text-color); padding: 8px; border-radius: 5px; font-family: 'Roboto', sans-serif; }
+.journal-save-button { background: var(--primary-color); color: var(--bg-color); border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-family: 'Orbitron', sans-serif; margin-top: 15px; transition: opacity 0.2s ease; }
+.journal-save-button:hover { opacity: 0.85; }
+.journal-save-feedback { color: var(--success-color); font-size: 0.85em; min-height: 1.2em; }
+.evidence-note-inline { font-size: 0.85em; color: #aaa; margin: 15px 0; }
+.journal-chart-container { background: #111; border: 1px solid #333; border-radius: 10px; padding: 10px; margin-bottom: 20px; overflow-x: auto; }
+#journal-chart { display: block; max-width: 100%; }
+.journal-list { display: flex; flex-direction: column-reverse; gap: 10px; max-height: 400px; overflow-y: auto; }
+.journal-entry { background: var(--panel-bg); border-left: 3px solid var(--primary-color); padding: 10px 15px; border-radius: 4px; font-size: 0.9em; }
+.journal-entry small { color: #999; }
+.journal-empty { color: #888; font-style: italic; }
+.journal-export-button, .journal-clear-button { font-family: 'Orbitron', sans-serif; padding: 10px 18px; border-radius: 5px; cursor: pointer; margin-top: 20px; margin-right: 10px; font-size: 0.85em; }
+.journal-export-button { background: transparent; border: 1px solid var(--success-color); color: var(--success-color); }
+.journal-clear-button { background: transparent; border: 1px solid var(--critical-color); color: var(--critical-color); }

@@ -48,6 +48,7 @@
                 <button class="nav-button" onclick="showModule('conciencia', this)">🌍 Conciencia</button>
                 <button class="nav-button" onclick="showModule('flujo', this)">📈 Flujo</button>
                 <button class="nav-button" onclick="showModule('legacy', this)">📜 Legado</button>
+                <button class="nav-button" onclick="showModule('journal', this)">📓 Diario</button>
             </div>
         </section>
 
@@ -113,6 +114,53 @@
                 </div>
             </div>
         </section>
+        <section id="journal" class="module-content">
+            <h2>Tu Diario Personal</h2>
+            <p>Registra cómo te sientes hoy. Con el tiempo podrás ver tu propio
+               historial junto a los datos solares reales de cada día — sin que
+               HELIOS te diga qué significa. Eso lo decides tú, observando.</p>
+
+            <p class="privacy-note">
+                🔒 Todo lo que anotes aquí se guarda solo en este navegador
+                (localStorage). Nada se envía a ningún servidor.
+            </p>
+
+            <form id="journal-form" class="journal-form">
+                <label for="journal-energy">Energía / vitalidad hoy</label>
+                <input type="range" id="journal-energy" min="1" max="5" value="3">
+                <span id="journal-energy-value">3</span>
+
+                <label for="journal-mood">Ánimo hoy</label>
+                <input type="range" id="journal-mood" min="1" max="5" value="3">
+                <span id="journal-mood-value">3</span>
+
+                <label for="journal-sleep">Calidad de sueño (noche anterior)</label>
+                <input type="range" id="journal-sleep" min="1" max="5" value="3">
+                <span id="journal-sleep-value">3</span>
+
+                <label for="journal-symptoms">Síntomas físicos (opcional)</label>
+                <input type="text" id="journal-symptoms" maxlength="140" placeholder="ej. dolor de cabeza leve, cansancio...">
+
+                <button type="submit" class="journal-save-button">Guardar registro de hoy</button>
+                <p id="journal-save-feedback" class="journal-save-feedback"></p>
+            </form>
+
+            <h3>Tu historial</h3>
+            <p class="evidence-note-inline">
+                <span class="evidence-badge hypothesis">SIN INTERPRETAR</span>
+                Estos datos se muestran uno junto al otro. HELIOS no afirma
+                ninguna relación causal entre ellos.
+            </p>
+
+            <div id="journal-chart-container" class="journal-chart-container">
+                <canvas id="journal-chart" width="800" height="300"></canvas>
+            </div>
+
+            <div id="journal-list" class="journal-list"></div>
+
+            <button id="journal-export" class="journal-export-button">Exportar mi historial (JSON)</button>
+            <button id="journal-clear" class="journal-clear-button">Borrar todo mi historial</button>
+        </section>
     </main>
 
     <!-- Modal para el Glosario -->
@@ -129,5 +177,6 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="journal.js"></script>
 </body>
 </html>
