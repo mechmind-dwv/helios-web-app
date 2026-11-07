@@ -25,6 +25,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // --- Funciones de UI ---
     function updateDashboard() {
+        // Copia de solo lectura para otros módulos (journal.js)
+        window.HELIOS_STATE = { ...state };
         document.getElementById('irg-value').innerText = state.irg.toFixed(1);
         document.getElementById('ftrt-value').innerText = state.ftrt.toFixed(2);
         const kpEl = document.getElementById('kp-value');
